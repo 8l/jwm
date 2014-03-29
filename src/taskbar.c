@@ -52,7 +52,7 @@ typedef struct Node {
    struct Node *prev;
 } Node;
 
-static const int TASK_SPACER = 2;
+static const int TASK_SPACER = 0;
 
 static TaskBarType *bars;
 static Node *taskBarNodes;
@@ -453,7 +453,7 @@ void Render(const TaskBarType *bp)
 
    x = TASK_SPACER;
    width -= x;
-   y = 1;
+   y = 0;
 
    ClearTrayDrawable(bp->cp);
 
@@ -487,11 +487,11 @@ void Render(const TaskBarType *bp)
          }
 
          if(remainder) {
-            button.width = itemWidth - TASK_SPACER;
+            button.width = itemWidth - TASK_SPACER + 1;
          } else {
-            button.width = itemWidth - TASK_SPACER - 1;
+            button.width = itemWidth - TASK_SPACER;
          }
-         button.height = bp->itemHeight - 1;
+         button.height = bp->itemHeight;
          button.x = x;
          button.y = y;
          button.icon = tp->client->icon;
@@ -517,7 +517,7 @@ void Render(const TaskBarType *bp)
             int i;
             JXSetForeground(display, gc, colors[COLOR_TASK_FG]);
             for(i = 0; i <= isize; i++) {
-               const int xc = x + i + 3;
+               const int xc = x + i + 2;
                const int y1 = bp->itemHeight - 3 - isize + i;
                const int y2 = bp->itemHeight - 3;
                JXDrawLine(display, buffer, gc, xc, y1, xc, y2);

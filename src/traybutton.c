@@ -291,10 +291,10 @@ void Draw(TrayComponentType *cp, int active)
       button.border = bp->border;
       button.type = BUTTON_TRAY;
    }
-   button.width = cp->width - 3;
-   button.height = cp->height - 3;
-   button.x = 1;
-   button.y = 1;
+   button.width = cp->width;
+   button.height = cp->height;
+   button.x = 0;
+   button.y = 0;
    button.font = FONT_TRAYBUTTON;
    button.text = bp->label;
    button.icon = bp->icon;

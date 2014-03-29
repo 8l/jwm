@@ -16,6 +16,7 @@
 #include "icon.h"
 #include "image.h"
 #include "gradient.h"
+#include "settings.h"
 
 static void GetScaledIconSize(IconNode *ip, int maxsize,
                               int *width, int *height);
@@ -24,9 +25,10 @@ static void GetScaledIconSize(IconNode *ip, int maxsize,
 void DrawButton(ButtonNode *bp)
 {
 
-   long outlinePixel;
-   ColorType fg;
+   XSegment segments[4];
+   long pixelUp, pixelDown;
    long bg1, bg2;
+   ColorType fg;
 
    Drawable drawable;
    GC gc;
@@ -52,65 +54,106 @@ void DrawButton(ButtonNode *bp)
       fg = COLOR_MENU_FG;
       bg1 = colors[COLOR_MENU_BG];
       bg2 = colors[COLOR_MENU_BG];
-      outlinePixel = colors[COLOR_MENU_BG];
+      pixelUp = colors[COLOR_MENU_BG];
+      pixelDown = colors[COLOR_MENU_BG];
       break;
    case BUTTON_MENU_ACTIVE:
       fg = COLOR_MENU_ACTIVE_FG;
       bg1 = colors[COLOR_MENU_ACTIVE_BG1];
       bg2 = colors[COLOR_MENU_ACTIVE_BG2];
-      outlinePixel = colors[COLOR_MENU_ACTIVE_OL];
+      pixelUp = colors[COLOR_MENU_ACTIVE_OL];
+      pixelDown = colors[COLOR_MENU_ACTIVE_OL];
       break;
    case BUTTON_TRAY:
       fg = COLOR_TRAYBUTTON_FG;
       bg1 = colors[COLOR_TRAYBUTTON_BG1];
       bg2 = colors[COLOR_TRAYBUTTON_BG2];
-      outlinePixel = colors[COLOR_TRAYBUTTON_DOWN];
+      pixelUp = colors[COLOR_TRAYBUTTON_UP];
+      pixelDown = colors[COLOR_TRAYBUTTON_DOWN];
       break;
    case BUTTON_TRAY_ACTIVE:
       fg = COLOR_TRAYBUTTON_ACTIVE_FG;
       bg1 = colors[COLOR_TRAYBUTTON_ACTIVE_BG1];
       bg2 = colors[COLOR_TRAYBUTTON_ACTIVE_BG2];
-      outlinePixel = colors[COLOR_TRAYBUTTON_ACTIVE_UP];
+      pixelUp = colors[COLOR_TRAYBUTTON_ACTIVE_DOWN];
+      pixelDown = colors[COLOR_TRAYBUTTON_ACTIVE_UP];
       break;
    case BUTTON_TASK:
       fg = COLOR_TASK_FG;
       bg1 = colors[COLOR_TASK_BG1];
       bg2 = colors[COLOR_TASK_BG2];
-      outlinePixel = colors[COLOR_TASK_DOWN];
+      pixelUp = colors[COLOR_TASK_UP];
+      pixelDown = colors[COLOR_TASK_DOWN];
       break;
    case BUTTON_TASK_ACTIVE:
       fg = COLOR_TASK_ACTIVE_FG;
       bg1 = colors[COLOR_TASK_ACTIVE_BG1];
       bg2 = colors[COLOR_TASK_ACTIVE_BG2];
-      outlinePixel = colors[COLOR_TASK_ACTIVE_UP];
+      pixelUp = colors[COLOR_TASK_ACTIVE_DOWN];
+      pixelDown = colors[COLOR_TASK_ACTIVE_UP];
       break;
    case BUTTON_MENU:
    default:
       fg = COLOR_MENU_FG;
       bg1 = colors[COLOR_MENU_BG];
       bg2 = colors[COLOR_MENU_BG];
-      outlinePixel = colors[COLOR_MENU_DOWN];
+      pixelUp = colors[COLOR_MENU_BG];
+      pixelDown = colors[COLOR_MENU_BG];
       break;
    }
 
-   /* Draw the background. */
+   /* Draw the button background. */
+   JXSetForeground(display, gc, bg1);
+   if(bg1 == bg2) {
+      /* single color */
+      JXFillRectangle(display, drawable, gc, x, y, width, height);
+   } else {
+      /* gradient */
+      DrawHorizontalGradient(drawable, gc, bg1, bg2, x, y, width, height);
+   }
+
+   /* Draw the border. */
    if(bp->border) {
 
-      /* Draw the button background. */
-      JXSetForeground(display, gc, bg1);
-      if(bg1 == bg2) {
-         /* single color */
-         JXFillRectangle(display, drawable, gc,
-                         x + 1, y + 1, width - 1, height - 1);
-      } else {
-         /* gradient */
-         DrawHorizontalGradient(drawable, gc, bg1, bg2,
-                                x + 1, y + 1, width - 2, height - 1);
-      }
+      /* Top and left. */
+      segments[0].x1 = x;
+      segments[0].y1 = y;
+      segments[0].x2 = x + width - 1;
+      segments[0].y2 = y;
+      segments[1].x1 = x;
+      segments[1].y1 = y + 1;
+      segments[1].x2 = x + width - 2;
+      segments[1].y2 = y + 1;
+      segments[2].x1 = x;
+      segments[2].y1 = y;
+      segments[2].x2 = x;
+      segments[2].y2 = y + height - 1;
+      segments[3].x1 = x + 1;
+      segments[3].y1 = y;
+      segments[3].x2 = x + 1;
+      segments[3].y2 = y + height - 2;
+      JXSetForeground(display, gc, pixelUp);
+      JXDrawSegments(display, drawable, gc, segments, 4);
 
-      /* Draw the outline. */
-      JXSetForeground(display, gc, outlinePixel);
-      DrawRoundedRectangle(drawable, gc, x, y, width, height, 3);
+      /* Right and bottom. */
+      segments[0].x1 = x + 1;
+      segments[0].y1 = y + height - 2;
+      segments[0].x2 = x + width - 2;
+      segments[0].y2 = y + height - 2;
+      segments[1].x1 = x;
+      segments[1].y1 = y + height - 1;
+      segments[1].x2 = x + width - 1;
+      segments[1].y2 = y + height - 1;
+      segments[2].x1 = x + width - 2;
+      segments[2].y1 = y + 1;
+      segments[2].x2 = x + width - 2;
+      segments[2].y2 = y + height - 1;
+      segments[3].x1 = x + width - 1;
+      segments[3].y1 = y;
+      segments[3].x2 = x + width - 1;
+      segments[3].y2 = y + height - 1;
+      JXSetForeground(display, gc, pixelDown);
+      JXDrawSegments(display, drawable, gc, segments, 4);
 
    }
 
@@ -146,7 +189,7 @@ void DrawButton(ButtonNode *bp)
          xoffset = 0;
       }
    } else {
-      xoffset = 3;
+      xoffset = 4;
    }
 
    /* Display the icon. */

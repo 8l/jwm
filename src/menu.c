@@ -620,12 +620,13 @@ void DrawMenuItem(Menu *menu, MenuItem *item, int index)
          ResetButton(&button, menu->pixmap, rootGC);
          button.x = MENU_BORDER_SIZE;
          button.y = 0;
-         button.width = menu->width - 2 * MENU_BORDER_SIZE - 1;
-         button.height = menu->itemHeight - 1;
+         button.width = menu->width - 2 * MENU_BORDER_SIZE;
+         button.height = menu->itemHeight;
          button.font = FONT_MENU;
          button.type = BUTTON_LABEL;
          button.text = menu->label;
          button.alignment = ALIGN_CENTER;
+         button.border = 0;
          DrawButton(&button);
       }
       return;
@@ -646,10 +647,11 @@ void DrawMenuItem(Menu *menu, MenuItem *item, int index)
       button.x = MENU_BORDER_SIZE;
       button.y = menu->offsets[index];
       button.font = FONT_MENU;
-      button.width = menu->width - 2 * MENU_BORDER_SIZE - 1;
-      button.height = menu->itemHeight - 1;
+      button.width = menu->width - 2 * MENU_BORDER_SIZE;
+      button.height = menu->itemHeight;
       button.text = item->name;
       button.icon = item->icon;
+      button.border = 0;
       DrawButton(&button);
 
       if(item->submenu) {

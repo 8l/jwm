@@ -770,6 +770,12 @@ void PlaceMaximizedClient(ClientNode *np, char horiz, char vert)
    np->oldWidth = np->width;
    np->oldHeight = np->height;
 
+   if(horiz) {
+      np->state.status |= STAT_HMAX;
+   }
+   if(vert) {
+      np->state.status |= STAT_VMAX;
+   }
    GetBorderSize(&np->state, &north, &south, &east, &west);
 
    sp = GetCurrentScreen(np->x + (east + west + np->width) / 2,
@@ -804,7 +810,6 @@ void PlaceMaximizedClient(ClientNode *np, char horiz, char vert)
       if(!(np->state.status & STAT_IIGNORE)) {
          np->width -= ((box.width - np->baseWidth) % np->xinc);
       }
-      np->state.status |= STAT_HMAX;
    }
 
    /* If maximizing vertically, update height. */
@@ -814,7 +819,6 @@ void PlaceMaximizedClient(ClientNode *np, char horiz, char vert)
       if(!(np->state.status & STAT_IIGNORE)) {
          np->height -= ((box.height - np->baseHeight) % np->yinc);
       }
-      np->state.status |= STAT_VMAX;
    }
 
 }

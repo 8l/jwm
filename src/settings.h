@@ -59,6 +59,7 @@ typedef struct {
    unsigned int desktopCount;
    unsigned int menuOpacity;
    unsigned int desktopDelay;
+   unsigned int borderRadius;
    SnapModeType snapMode;
    MoveModeType moveMode;
    StatusWindowType moveStatusType;
@@ -68,6 +69,7 @@ typedef struct {
    InsertModeType taskInsertMode;
    char popupEnabled;
    char exitConfirmation;
+   char handles;
 } Settings;
 
 extern Settings settings;

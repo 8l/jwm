@@ -840,11 +840,22 @@ void ParseKey(const TokenNode *tp) {
 }
 
 /** Parse window style. */
-void ParseWindowStyle(const TokenNode *tp) {
+void ParseWindowStyle(const TokenNode *tp)
+{
 
    const TokenNode *np;
+   const char *handles;
+   const char *radius;
 
-   Assert(tp);
+   handles = FindAttribute(tp->attributes, "handles");
+   if(handles && !strcmp(handles, TRUE_VALUE)) {
+      settings.handles = 1;
+   }
+
+   radius = FindAttribute(tp->attributes, "radius");
+   if(radius) {
+      settings.borderRadius = ParseUnsigned(tp, radius);
+   }
 
    for(np = tp->subnodeHead; np; np = np->next) {
       switch(np->type) {
