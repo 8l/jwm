@@ -97,8 +97,8 @@ void DrawButton(ButtonNode *bp)
       fg = COLOR_MENU_FG;
       bg1 = colors[COLOR_MENU_BG];
       bg2 = colors[COLOR_MENU_BG];
-      pixelUp = colors[COLOR_MENU_BG];
-      pixelDown = colors[COLOR_MENU_BG];
+      pixelUp = colors[COLOR_MENU_UP];
+      pixelDown = colors[COLOR_MENU_DOWN];
       break;
    }
 
